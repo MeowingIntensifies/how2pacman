@@ -11,7 +11,7 @@ public class Board extends JPanel implements ActionListener {
 
     public static final int MAPSHIFT = 50;          // Zmienna mapshift określa przesunięcie poszczególnych elementów tablicy 2d na piksele
     private static final int GHOST_KILLED_POINTS = 100;
-    private static final int INVURNERABLE_BONUS = 500;
+    private static final int INVURNERABLE_BONUS = 1000;
     private static final int INVURNERABLE_DIE = 300 ;
 
     private Timer timer;
@@ -83,10 +83,10 @@ public class Board extends JPanel implements ActionListener {
                 if (level.getMapValue(i, j) == 2) {
                     g2d.drawImage(level.getBlockImage(), i * MAPSHIFT, j * MAPSHIFT, this);
                 }
-                if (level.getMapValue(i, j) == 1 && level.isOnList(i, j)) {
+                if (level.getMapValue(i, j) == 1 && level.isOnPointList(i, j)) {
                     g2d.drawImage(level.getPointImage(), i * MAPSHIFT, j * MAPSHIFT, this);
                 }
-                if (level.getMapValue(i, j) == 3 && level.isOnList(i, j)) {
+                if (level.getMapValue(i, j) == 3 && level.isOnBonusList(i, j)) {
                     g2d.drawImage(level.getBonusImage(), i * MAPSHIFT, j * MAPSHIFT, this);
                 }
             }
@@ -128,28 +128,32 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void step() {
-        //ghostsAI.makeGhostsMove();
-       /* if(collision.checkforPacmanGhost(ghostList) && pacman.getInvurnerableFrames() == 0){
+        ghostsAI.makeGhostsMove();
+
+        if(collision.checkforPacmanGhost(ghostList) && pacman.getInvurnerableFrames() == 0){
             loseLife();
             pacman.returnToStartingPoint();
             pacman.setInvurnerable(INVURNERABLE_DIE);
-        } */
-        /*
+        }
+
         if(collision.checkforPacmanGhost(ghostList) && pacman.getBonusStatus()){
             pacman.setInvurnerable(INVURNERABLE_BONUS);
             increasePoints(GHOST_KILLED_POINTS);
         }
-        */
         
-       /* if(pacman.getInvurnerableFrames() == 0){
+        if(pacman.getInvurnerableFrames() == 0){
             pacman.setBonusStatus(false); 
         }
-        */
+
 
         collision.checkForCollsions();
 
        if (collision.checkForPoints()) {
            increasePoints();
+       }
+       if (collision.checkForBonusPoints()) {
+           increasePoints();
+           pacman.setBonusStatus(true);
        }
 
         pacman.move();
@@ -161,7 +165,7 @@ public class Board extends JPanel implements ActionListener {
             pacman.changeImage(pacman.getDirection()*10);
         }
 
-        //pacman.decreaseInvurnerableFrames();
+        pacman.decreaseInvurnerableFrames();
 
         repaint(pacman.getXPosition() - MAPSHIFT, pacman.getYPosition() - MAPSHIFT,
                     pacman.getWidth() + MAPSHIFT * 2, pacman.getHeight() + MAPSHIFT * 2);

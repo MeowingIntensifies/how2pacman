@@ -26,10 +26,12 @@ public class LevelMap {
 
     private List<Rectangle> listaKolizjiMapy;
     private List<Rectangle> listaPunktowMapy;
+    private List<Rectangle> listaBonusowMapy;
 
     private int pacmanStartXPosition;
     private int pacmanStartYPosition;
     private int pacmanStartDirection;
+
 
 
     public LevelMap( int level){
@@ -64,7 +66,7 @@ public class LevelMap {
     }
 
 
-    private  void loadImage(){
+    private void loadImage(){
         ImageIcon ii = new ImageIcon("klocek.png");
         blockImage = ii.getImage();
         blockWidth = blockImage.getWidth(null);
@@ -84,15 +86,21 @@ public class LevelMap {
     private void initCollision() {
         listaKolizjiMapy = new ArrayList<>();
         listaPunktowMapy = new ArrayList<>();
+        listaBonusowMapy = new ArrayList<>();
 
         for (int i = 0; i < this.getSizeX(); i++) {
             for (int j = 0; j < this.getSizeY(); j++) {
                 if (this.getMapValue(i, j) == 2  ) {
                     Rectangle tileRect = new Rectangle(i * Board.MAPSHIFT, j * Board.MAPSHIFT, blockWidth, blockHeight);
                     this.listaKolizjiMapy.add(tileRect);
-                } else {
+                }
+                if (this.getMapValue(i,j) == 1 ) {
                     Rectangle tileRect = new Rectangle((i * Board.MAPSHIFT)+ POINTSHIFT, (j * Board.MAPSHIFT)+POINTSHIFT, 20, 20);
                     this.listaPunktowMapy.add(tileRect);
+                }
+                if(this.getMapValue(i,j) == 3){
+                    Rectangle tileRect = new Rectangle((i * Board.MAPSHIFT)+ POINTSHIFT, (j * Board.MAPSHIFT)+POINTSHIFT, 20, 20);
+                    this.listaBonusowMapy.add(tileRect);
                 }
             }
         }
@@ -161,11 +169,15 @@ public class LevelMap {
         return listaPunktowMapy;
     }
 
+    public List<Rectangle> getMapBonusPointList() {
+        return listaBonusowMapy;
+    }
+
     public void removePoint(Rectangle kkk) {
         listaPunktowMapy.remove(kkk);
     }
 
-    public boolean isOnList(int i, int j) {
+    public boolean isOnPointList(int i, int j) {
         for(Rectangle point: this.listaPunktowMapy){
                if( point.getX() == ((i*Board.MAPSHIFT)+POINTSHIFT)  && point.getY() == ((j*Board.MAPSHIFT)+POINTSHIFT )) {
                    return true;
@@ -173,5 +185,19 @@ public class LevelMap {
         }
              return false;
         }
-}
+
+    public void removeBonusPoint(Rectangle kkk) {
+        listaBonusowMapy.remove(kkk);
+    }
+
+    public boolean isOnBonusList(int i, int j) {
+        for(Rectangle point: this.listaBonusowMapy){
+            if( point.getX() == ((i*Board.MAPSHIFT)+POINTSHIFT)  && point.getY() == ((j*Board.MAPSHIFT)+POINTSHIFT )) {
+                return true;
+            }
+        }
+        return false;
+    }
+    }
+
 

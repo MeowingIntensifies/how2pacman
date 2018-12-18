@@ -17,6 +17,7 @@ public class GhostsAI {
         this.ghostList = ghostList;
         this.collsion = collision;
         this.level = level;
+        this.pacman = pacman;
     }
 
     public void makeGhostsMove(){
@@ -80,10 +81,10 @@ public class GhostsAI {
         if(ghosty.getYPosition()%50 == 0 || ghosty.getXPosition()%50 == 0){
             for (int i = 1; i <=4; i++) {
                 if (!collsion.checkMapCollision(ghosty.getCollisionSprite(i),level.getMapCollsionList()) && ghosty.getDirection() != i){
-                    if (tempDistance == -1 ){
+                    if (tempDistance == 0 ){
                         tempDistance = getDistance(ghosty,pacman,i);
                     }
-                    if(tempDistance >  getDistance(ghosty,pacman,i)){
+                    else if(tempDistance >  getDistance(ghosty,pacman,i)){
                         tempDistance = getDistance(ghosty,pacman,i);
                         tempDirection = i;
                     }

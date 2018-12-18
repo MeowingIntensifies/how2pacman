@@ -41,6 +41,9 @@ public class Collision {
     public boolean checkForPoints(){
       return checkPointCollsion(pacman.getCollisionSprite(), level.getMapPointList());  //sprawdzanie kolizji gracza z punktami
     }
+    public boolean checkForBonusPoints(){
+        return checkBonusPointCollsion(pacman.getCollisionSprite(), level.getMapBonusPointList());  //sprawdzanie kolizji gracza z punktami
+    }
 
     public boolean checkforPacmanGhost(ArrayList<Ghost> ghostList) {
         for (Ghost ghost : ghostList) {
@@ -65,10 +68,16 @@ public class Collision {
     private boolean checkPointCollsion(Rectangle pacmanSprite, List<Rectangle> mapPointList) {
         for (Rectangle kkk : mapPointList) {
             if (kkk.intersects(pacmanSprite)) {
-             //   if(level.getMapValue(Math.toIntExact(Math.round(kkk.getX())),Math.toIntExact(Math.round(kkk.getY()))) == 3 ){
-                    // pacman.setBonusStatus(true);
-               // }
                 level.removePoint(kkk);
+                return true;
+            }
+        }
+        return false;
+    }
+    private boolean checkBonusPointCollsion(Rectangle pacmanSprite, List<Rectangle> mapPointList) {
+        for (Rectangle kkk : mapPointList) {
+            if (kkk.intersects(pacmanSprite)) {
+                level.removeBonusPoint(kkk);
                 return true;
             }
         }
