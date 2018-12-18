@@ -114,6 +114,15 @@ public class Pacman {
         }
     }
 
+    public Rectangle getTestCollisionSprite() {
+
+        if (dx < 0 || dy < 0) {
+            return new Rectangle(getXPosition() + dx, getYPosition() + dy, 25, 25);
+        } else {
+            return new Rectangle(getXPosition(), getYPosition(), 25+dx, 25+dy);
+        }
+    }
+
     public Rectangle getCollisionSprite(int direction) {
 
         switch (direction) {

@@ -48,6 +48,7 @@ public class Collision {
     public boolean checkforPacmanGhost(ArrayList<Ghost> ghostList) {
         for (Ghost ghost : ghostList) {
             if (ghost.getCollisionSprite().intersects(pacman.getCollisionSprite())) {
+                ghost.returnToStartingPoint();
                 return true;
             }
         }

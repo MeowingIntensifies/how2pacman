@@ -94,8 +94,15 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
+        didWeLose();
         didWeWin();
         step();
+    }
+
+    private void didWeLose() {
+        if(pacmanLifes < 0 ){
+
+        }
     }
 
 
@@ -128,35 +135,41 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void step() {
+
         ghostsAI.makeGhostsMove();
 
-        if(collision.checkforPacmanGhost(ghostList) && pacman.getInvurnerableFrames() == 0){
-            loseLife();
-            pacman.returnToStartingPoint();
-            pacman.setInvurnerable(INVURNERABLE_DIE);
+        if(pacman.getInvurnerableFrames() == 0){
+            pacman.setBonusStatus(false);
         }
 
-        if(collision.checkforPacmanGhost(ghostList) && pacman.getBonusStatus()){
+        if (collision.checkForBonusPoints()) {
+            increasePoints();
+            pacman.setBonusStatus(true);
             pacman.setInvurnerable(INVURNERABLE_BONUS);
-            increasePoints(GHOST_KILLED_POINTS);
         }
-        
+
+        if(collision.checkforPacmanGhost(ghostList)){
+            if (pacman.getBonusStatus()) {
+                increasePoints(GHOST_KILLED_POINTS);
+            }else{
+                loseLife();
+                pacman.returnToStartingPoint();
+                pacman.setInvurnerable(INVURNERABLE_DIE);
+            }
+        }
+
         if(pacman.getInvurnerableFrames() == 0){
             pacman.setBonusStatus(false); 
         }
-
 
         collision.checkForCollsions();
 
        if (collision.checkForPoints()) {
            increasePoints();
        }
-       if (collision.checkForBonusPoints()) {
-           increasePoints();
-           pacman.setBonusStatus(true);
-       }
 
         pacman.move();
+
 
         if (!pacman.isStopped() && !pacman.getDriftingFlag()) {                                             // sprawdzamy czy nie doszło do driftingu, jeśli nie to zmienaimy obrazek
             pacman.changeImage(pacman.getDirection());
@@ -170,10 +183,11 @@ public class Board extends JPanel implements ActionListener {
         repaint(pacman.getXPosition() - MAPSHIFT, pacman.getYPosition() - MAPSHIFT,
                     pacman.getWidth() + MAPSHIFT * 2, pacman.getHeight() + MAPSHIFT * 2);
 
-        /*for (Ghost ghost : ghostList) {
+        for (Ghost ghost : ghostList) {
             repaint(ghost.getXPosition() - MAPSHIFT, ghost.getYPosition() - MAPSHIFT,
                     ghost.getWidth() + MAPSHIFT * 2, ghost.getHeight() + MAPSHIFT * 2);
-        }*/
+        }
+
         repaint(50, 820, 200, 200);
         }
 
