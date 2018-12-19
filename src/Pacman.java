@@ -34,6 +34,8 @@ public class Pacman {
     private boolean driftingFlag;
     private int invurnerableFrames;
     private boolean bonusStatus;
+    public static final int INVURNERABLE_BONUS = 1000;
+    public static final int INVURNERABLE_DIE = 500 ;
 
 
     public Pacman(int position_x, int position_y, int direction) {

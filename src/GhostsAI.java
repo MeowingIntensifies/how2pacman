@@ -1,14 +1,15 @@
 
 import java.util.ArrayList;
 
-import static java.lang.Math.*;
-
 public class GhostsAI {
 
     private ArrayList<Ghost> ghostList;
     private Collision collsion;
     private LevelMap level;
     private Pacman pacman;
+
+    public final  static  int GHOST_GRAVEYARD_X = -100;
+    public final static  int GHOST_GRAVEYARD_Y = -100;
 
     public GhostsAI(ArrayList<Ghost> ghostList, Collision collision, LevelMap level, Pacman pacman) {
         this.ghostList = ghostList;
@@ -19,10 +20,36 @@ public class GhostsAI {
 
     public void makeGhostsMove() {
         for (Ghost ghost : ghostList) {
+
+            if (ghost.getIsAlive() == false){                                                                               // sprawdzamy czy duszek nie umarł
+                if(ghost.getXPosition() != GHOST_GRAVEYARD_X  && ghost.getYPosition() != GHOST_GRAVEYARD_Y ) {              // sprawdzamy czy już nie znajduje się na cmentarzu (poza mapą)// jeśli nie znaczy że jest tu pierwszy raz i nakładamy na niego nieśmiertelność
+                    ghost.setXPositon(GHOST_GRAVEYARD_X);                                                                   // przenosimy pacmana na cmętarz
+                    ghost.setYPositon(GHOST_GRAVEYARD_Y);
+                }
+                                                                                                                               //dążymy do zmniejszenia
+                if(!shouldWeMove(ghost)){
+                    ghost.stop();
+                    ghost.setTimer(ghost.getTimer() - Board.DELAY);
+                    continue;
+                }else{
+                    ghost.setTimer(ghost.getRespawnTimer());
+                    ghost.setIsAlive(true);
+                    ghost.returnToStartingPoint();
+                }
+            }
+
             whereToGhost(ghost, ghost.getGhostType());
             ghost.stop();
             ghost.setDYDX(ghost.getDirection());
             ghost.move();
+        }
+    }
+
+    private boolean shouldWeMove(Ghost ghost) {
+        if (ghost.getTimer() <= 0) {
+            return true;
+        }else{
+            return false;
         }
     }
 

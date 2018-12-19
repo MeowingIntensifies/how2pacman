@@ -31,11 +31,12 @@ public class LevelMap {
     private int pacmanStartXPosition;
     private int pacmanStartYPosition;
     private int pacmanStartDirection;
-
+    private int ghostNumber;
+    private ArrayList<GhostEntryData> ghostDataList;
 
 
     public LevelMap( int level){
-        currentLevel = level;
+        this.currentLevel = level;
         constructMap(currentLevel);
         loadImage();
         initCollision();
@@ -64,6 +65,8 @@ public class LevelMap {
     public int getMapValue(int x, int y){
         return actual_map[x][y];
     }
+
+    public ArrayList<GhostEntryData> getGhostDataList(){return ghostDataList;}
 
 
     private void loadImage(){
@@ -114,6 +117,7 @@ public class LevelMap {
     }
 
     private void constructMap (int level) {
+        ghostDataList = new ArrayList<>();
         String pathname;
         switch (level) {
             case 1: {
@@ -150,6 +154,17 @@ public class LevelMap {
                 this.pacmanStartXPosition = in.nextInt();
                 this.pacmanStartYPosition = in.nextInt();
                 this.pacmanStartDirection = in.nextInt();
+                this.ghostNumber = in.nextInt();
+                for (int i =0; i < ghostNumber; i++){
+                    GhostEntryData ghostData = new GhostEntryData();
+                    ghostDataList.add(ghostData);
+                    ghostData.setGhostType(in.nextInt());
+                    ghostData.setPositionX(in.nextInt());
+                    ghostData.setPositionY(in.nextInt());
+                    ghostData.setGhostSpawnTimer(in.nextInt());
+                    ghostData.setGhostreSpawnTimer(in.nextInt());
+                }
+                    
                 this.actual_map = new int[this.sizeX][this.sizeY];
                 for (int i = 0; i < sizeX; i++) {
                     for (int j = 0; j < sizeY; j++) {

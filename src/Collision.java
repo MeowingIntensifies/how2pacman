@@ -48,7 +48,12 @@ public class Collision {
     public boolean checkforPacmanGhost(ArrayList<Ghost> ghostList) {
         for (Ghost ghost : ghostList) {
             if (ghost.getCollisionSprite().intersects(pacman.getCollisionSprite())) {
-                ghost.returnToStartingPoint();
+                if (pacman.getBonusStatus()) {
+                    ghost.setIsAlive(false);
+                }else{
+                    pacman.returnToStartingPoint();
+                    pacman.setInvurnerable(Pacman.INVURNERABLE_DIE);
+                }
                 return true;
             }
         }
@@ -79,6 +84,8 @@ public class Collision {
         for (Rectangle kkk : mapPointList) {
             if (kkk.intersects(pacmanSprite)) {
                 level.removeBonusPoint(kkk);
+                pacman.setBonusStatus(true);
+                pacman.setInvurnerable(Pacman.INVURNERABLE_BONUS);
                 return true;
             }
         }

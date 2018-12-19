@@ -8,10 +8,20 @@ public class Ghost extends Pacman{
     public static final int PINK = 4;
 
     private int ghostType;
+    private boolean isAlive;
+    private int respawnTimer;
+    private int spawnTimer;
+    private int timer;
 
-    public Ghost(int position_x, int position_y, int direction, int ghostType) {
+    public Ghost(int position_x, int position_y, int direction, int ghostType, int spawnTimer, int respawnTimer) {
         super(position_x, position_y, direction);
         this.ghostType = ghostType;
+        this.spawnTimer = spawnTimer;
+        this.respawnTimer = respawnTimer;
+        this.timer = spawnTimer;
+        this.isAlive = false;
+
+
     }
     public int getGhostType(){
         return ghostType;
@@ -133,4 +143,35 @@ public class Ghost extends Pacman{
         h = image.getHeight(null);
     }
 
+    public boolean getIsAlive() {
+        return isAlive;
+    }
+
+    public void setIsAlive(boolean isAlive) {
+        this.isAlive = isAlive;
+    }
+
+    public int getRespawnTimer() {
+        return respawnTimer;
+    }
+
+    public void setRespawnTimer(int respawnTimer) {
+        this.respawnTimer = respawnTimer;
+    }
+
+    public int getSpawnTimer() {
+        return spawnTimer;
+    }
+
+    public void setSpawnTimer(int spawnTimer) {
+        this.spawnTimer = spawnTimer;
+    }
+
+    public int getTimer() {
+        return timer;
+    }
+
+    public void setTimer(int timer) {
+        this.timer = timer;
+    }
 }

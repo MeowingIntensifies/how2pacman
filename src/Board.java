@@ -9,17 +9,15 @@ import javax.swing.Timer;
 
 public class Board extends JPanel implements ActionListener {
 
-    public static final int MAPSHIFT = 50;          // Zmienna mapshift określa przesunięcie poszczególnych elementów tablicy 2d na piksele
-    private static final int GHOST_KILLED_POINTS = 100;
-    private static final int INVURNERABLE_BONUS = 1000;
-    private static final int INVURNERABLE_DIE = 300 ;
+    public static final int MAPSHIFT = 50;
+    public static final int DELAY = 10;                                         // Zmienna MAPSHIFT określa przesunięcie poszczególnych elementów tablicy 2d na piksele ( wielkosc siatki)
+    public static final int GHOST_KILLED_POINTS = 100;
 
     private Timer timer;
     private Pacman pacman;
     private LevelMap level;
     private Collision collision;
     private GhostsAI ghostsAI;
-    private final int DELAY = 10;
     private int animationTimer;
     private ArrayList<Ghost> ghostList;
     private int points;
@@ -42,10 +40,16 @@ public class Board extends JPanel implements ActionListener {
         level = new LevelMap(gameLevel);
 
         pacman = new Pacman(level.getPacmanStartXPosition() * MAPSHIFT, level.getPacmanStartYPosition()*MAPSHIFT, level.getPacmanStartDirection());
+
         collision = new Collision(pacman, level);
+
         ghostList = new ArrayList<>();
-        Ghost ghost = new Ghost(5*MAPSHIFT,5*MAPSHIFT,Ghost.RIGHT, Ghost.RED);
-        ghostList.add(ghost);
+
+        for(GhostEntryData ghostData : level.getGhostDataList()){
+            Ghost ghost = new Ghost(ghostData.getPositionX()*MAPSHIFT,ghostData.getPositionY()*MAPSHIFT, Ghost.RIGHT, ghostData.getGhostType(),ghostData.getGhostSpawnTimer(),ghostData.getGhostreSpawnTimer());
+            ghostList.add(ghost);
+        }
+
         ghostsAI = new GhostsAI(ghostList,collision,level,pacman);
 
         timer = new Timer(DELAY, this);
@@ -67,10 +71,6 @@ public class Board extends JPanel implements ActionListener {
         g2d.drawImage(pacman.getImage(), pacman.getXPosition(),
                 pacman.getYPosition(), this);
 
-        for(Ghost ghost : ghostList){
-            g2d.drawImage(ghost.getImage(), ghost.getXPosition(),
-                    ghost.getYPosition(), this);
-        }
 
         for (int u = 0; u < getLifes(); u++) {
             g2d.drawImage(pacman.getLifesImage(), 50 + u * 50,
@@ -90,6 +90,10 @@ public class Board extends JPanel implements ActionListener {
                     g2d.drawImage(level.getBonusImage(), i * MAPSHIFT, j * MAPSHIFT, this);
                 }
             }
+        }
+        for(Ghost ghost : ghostList){
+            g2d.drawImage(ghost.getImage(), ghost.getXPosition(),
+                    ghost.getYPosition(), this);
         }
     }
 
@@ -142,31 +146,20 @@ public class Board extends JPanel implements ActionListener {
             pacman.setBonusStatus(false);
         }
 
-        if (collision.checkForBonusPoints()) {
+        if (collision.checkForBonusPoints() || collision.checkForPoints()) {
             increasePoints();
-            pacman.setBonusStatus(true);
-            pacman.setInvurnerable(INVURNERABLE_BONUS);
         }
 
         if(collision.checkforPacmanGhost(ghostList)){
             if (pacman.getBonusStatus()) {
                 increasePoints(GHOST_KILLED_POINTS);
             }else{
+                decreasePoints();
                 loseLife();
-                pacman.returnToStartingPoint();
-                pacman.setInvurnerable(INVURNERABLE_DIE);
             }
         }
 
-        if(pacman.getInvurnerableFrames() == 0){
-            pacman.setBonusStatus(false); 
-        }
-
         collision.checkForCollsions();
-
-       if (collision.checkForPoints()) {
-           increasePoints();
-       }
 
         pacman.move();
 
@@ -174,6 +167,7 @@ public class Board extends JPanel implements ActionListener {
         if (!pacman.isStopped() && !pacman.getDriftingFlag()) {                                             // sprawdzamy czy nie doszło do driftingu, jeśli nie to zmienaimy obrazek
             pacman.changeImage(pacman.getDirection());
         }
+
         if(pacman.isStopped()) {
             pacman.changeImage(pacman.getDirection()*10);
         }
@@ -189,6 +183,7 @@ public class Board extends JPanel implements ActionListener {
         }
 
         repaint(50, 820, 200, 200);
+
         }
 
         public void increasePoints () {
