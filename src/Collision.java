@@ -5,7 +5,6 @@ import java.util.List;
 public class Collision {
     private Pacman pacman;
     private LevelMap level;
-    private ArrayList<Ghost> ghostList;
 
     public Collision(Pacman pacman, LevelMap level){
         this.pacman = pacman;
@@ -47,10 +46,11 @@ public class Collision {
 
     public boolean checkforPacmanGhost(ArrayList<Ghost> ghostList) {
         for (Ghost ghost : ghostList) {
-            if (ghost.getCollisionSprite().intersects(pacman.getCollisionSprite())) {
+            if (ghost.getAIPlayerCollisionSprite().intersects(pacman.getAIPlayerCollisionSprite())) {
                 if (pacman.getBonusStatus()) {
                     ghost.setIsAlive(false);
                 }else{
+                    ghost.returnToStartingPoint();
                     pacman.returnToStartingPoint();
                     pacman.setInvurnerable(Pacman.INVURNERABLE_DIE);
                 }

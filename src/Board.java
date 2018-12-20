@@ -4,8 +4,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import javax.swing.JPanel;
-import javax.swing.Timer;
+import javax.swing.*;
 
 public class Board extends JPanel implements ActionListener {
 
@@ -22,13 +21,21 @@ public class Board extends JPanel implements ActionListener {
     private ArrayList<Ghost> ghostList;
     private int points;
     private int pacmanLifes;
+    private Image downBar;
+    private int pointTimer;
 
 
     public Board(int lvl) {
         pacmanLifes = 3;
         animationTimer = 0;
+        pointTimer = 4500;
         points = 0;
         initBoard(lvl);
+    }
+
+    public  void loadBar(){
+        ImageIcon ii = new ImageIcon("barUI.png");
+        downBar = ii.getImage();
     }
 
     private void initBoard(int gameLevel) {
@@ -37,6 +44,8 @@ public class Board extends JPanel implements ActionListener {
 
         addKeyListener(new TAdapter());
         setBackground(Color.black);
+        loadBar();
+
         level = new LevelMap(gameLevel);
 
         pacman = new Pacman(level.getPacmanStartXPosition() * MAPSHIFT, level.getPacmanStartYPosition()*MAPSHIFT, level.getPacmanStartDirection());
@@ -70,6 +79,14 @@ public class Board extends JPanel implements ActionListener {
 
         g2d.drawImage(pacman.getImage(), pacman.getXPosition(),
                 pacman.getYPosition(), this);
+
+        g2d.drawImage(downBar, 0,
+                800, this);
+        if(pointTimer > 0) {
+            g2d.drawString("Zostało " + pointTimer / 100 + " bonusowych sekund ", 300, 820);
+        }else {
+            g2d.drawString("Zostało " + 0 + " bonusowych sekund ", 300, 820);
+        }
 
 
         for (int u = 0; u < getLifes(); u++) {
@@ -105,7 +122,6 @@ public class Board extends JPanel implements ActionListener {
 
     private void didWeLose() {
         if(pacmanLifes < 0 ){
-
         }
     }
 
@@ -115,6 +131,7 @@ public class Board extends JPanel implements ActionListener {
         {
             timer.stop();
             increaseLife();
+            addTimerPoints();
             initBoard(level.getCurrentLevel() + 1);
             repaint();
         }
@@ -136,6 +153,13 @@ public class Board extends JPanel implements ActionListener {
 
     private int getLifes() {
         return pacmanLifes;
+    }
+    private void addTimerPoints()
+    {
+        if(pointTimer >0) {
+            increasePoints(pointTimer % 100);
+        }
+        pointTimer = 4500;
     }
 
     private void step() {
@@ -173,20 +197,27 @@ public class Board extends JPanel implements ActionListener {
         }
 
         pacman.decreaseInvurnerableFrames();
+        decreasePointTimer();
 
         repaint(pacman.getXPosition() - MAPSHIFT, pacman.getYPosition() - MAPSHIFT,
                     pacman.getWidth() + MAPSHIFT * 2, pacman.getHeight() + MAPSHIFT * 2);
 
+
         for (Ghost ghost : ghostList) {
+            ghost.changeImage(ghost.getDirection());
             repaint(ghost.getXPosition() - MAPSHIFT, ghost.getYPosition() - MAPSHIFT,
                     ghost.getWidth() + MAPSHIFT * 2, ghost.getHeight() + MAPSHIFT * 2);
         }
 
         repaint(50, 820, 200, 200);
-
+        repaint();
         }
 
-        public void increasePoints () {
+    private void decreasePointTimer() {
+        pointTimer --;
+    }
+
+    public void increasePoints () {
             points += 10;
         }
 

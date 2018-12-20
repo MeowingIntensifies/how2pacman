@@ -22,7 +22,7 @@ import javax.swing.JFrame;
         }
 
         public static void main(String[] args) {
-            int lvl = 3;
+            int lvl = 2;
 
                 EventQueue.invokeLater(() -> {
                     MovingSpriteEx ex = new MovingSpriteEx(lvl);

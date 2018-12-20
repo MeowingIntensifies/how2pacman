@@ -1,17 +1,20 @@
 import javax.swing.*;
+import java.awt.*;
 
 public class Ghost extends Pacman{
 
     public static final int RED =  1;
-    public static final int BLUE = 2;
+    public static final int BLUE = 4;
     public static final int ORANG = 3;
-    public static final int PINK = 4;
+    public static final int PINK = 2;
+    public static final int SLOW = 1;
 
     private int ghostType;
     private boolean isAlive;
     private int respawnTimer;
     private int spawnTimer;
     private int timer;
+    private boolean frigtened;
 
     public Ghost(int position_x, int position_y, int direction, int ghostType, int spawnTimer, int respawnTimer) {
         super(position_x, position_y, direction);
@@ -21,6 +24,8 @@ public class Ghost extends Pacman{
         this.timer = spawnTimer;
         this.isAlive = false;
 
+        this.loadImage(ghostType);
+
 
     }
     public int getGhostType(){
@@ -28,88 +33,97 @@ public class Ghost extends Pacman{
     }
 
     public void changeImage( int direction) {
-        ImageIcon oo = new ImageIcon("pacWHOLE.png");
-        switch (ghostType) {
-            case RED: {
-                switch (direction) {
-                    case LEFT: {
-                        oo = new ImageIcon("pacWHOLE.png");
+        ImageIcon oo = new ImageIcon("Blinkey\\BlinkeyLeftGif.gif");
+        if(isFrigtened()) {
+            oo = new ImageIcon("ScaredGif.gif");
+        }
+        else{
+            switch (ghostType) {
+                case RED: {
+                    switch (direction) {
+                        case LEFT: {
+                            oo = new ImageIcon("Blinkey\\BlinkeyLeftGif.gif");
+                            break;
+                        }
+                        case RIGHT: {
+                            oo = new ImageIcon("Blinkey\\BlinkeyRightGif.gif");
+                            break;
+                        }
+                        case UP: {
+                            oo = new ImageIcon("Blinkey\\BlinkeyUpGif.gif");
+                            break;
+                        }
+                        case DOWN: {
+                            oo = new ImageIcon("Blinkey\\BlinkeyDownGif.gif");
+                            break;
+                        }
                     }
-                    case RIGHT: {
-                        oo = new ImageIcon("pacWHOLE.png");
-                    }
-                    case UP: {
-                        oo = new ImageIcon("pacWHOLE.png");
-                    }
-                    case DOWN: {
-                        oo = new ImageIcon("pacWHOLE.png");
-                    }
-                }
 
-                break;
-            }
-            case BLUE: {
-                switch (direction) {
-                    case LEFT: {
-                        oo = new ImageIcon("blueGhostLeft.png");
-                        break;
-                    }
-                    case RIGHT: {
-                        oo = new ImageIcon("blueGhostRight.png");
-                        break;
-                    }
-                    case UP: {
-                        oo = new ImageIcon("blueGhostUp.png");
-                        break;
-                    }
-                    case DOWN: {
-                        oo = new ImageIcon("blueGhostDown.png");
-                        break;
-                    }
+                    break;
                 }
-                break;
-            }
-            case ORANG: {
-                switch (direction) {
-                    case LEFT: {
-                        oo = new ImageIcon("orangGhostLeft.png");
-                        break;
+                case BLUE: {
+                    switch (direction) {
+                        case LEFT: {
+                            oo = new ImageIcon("blueGhostLeft.png");
+                            break;
+                        }
+                        case RIGHT: {
+                            oo = new ImageIcon("blueGhostRight.png");
+                            break;
+                        }
+                        case UP: {
+                            oo = new ImageIcon("blueGhostUp.png");
+                            break;
+                        }
+                        case DOWN: {
+                            oo = new ImageIcon("blueGhostDown.png");
+                            break;
+                        }
                     }
-                    case RIGHT: {
-                        oo = new ImageIcon("orangGhostRight.png");
-                        break;
-                    }
-                    case UP: {
-                        oo = new ImageIcon("orangGhostUp.png");
-                        break;
-                    }
-                    case DOWN: {
-                        oo = new ImageIcon("orangGhostDown.png");
-                        break;
-                    }
+                    break;
                 }
-                break;
-            }
-            case PINK: {
-                switch (direction) {
-                    case LEFT: {
-                        oo = new ImageIcon("pinkGhostLeft.png");
-                        break;
+                case ORANG: {
+                    switch (direction) {
+                        case LEFT: {
+                            oo = new ImageIcon("orangGhostLeft.png");
+                            break;
+                        }
+                        case RIGHT: {
+                            oo = new ImageIcon("orangGhostRight.png");
+                            break;
+                        }
+                        case UP: {
+                            oo = new ImageIcon("orangGhostUp.png");
+                            break;
+                        }
+                        case DOWN: {
+                            oo = new ImageIcon("orangGhostDown.png");
+                            break;
+                        }
                     }
-                    case RIGHT: {
-                        oo = new ImageIcon("pinkGhostRight.png");
-                        break;
-                    }
-                    case UP: {
-                        oo = new ImageIcon("pinkGhostUp.png");
-                        break;
-                    }
-                    case DOWN: {
-                        oo = new ImageIcon("pinkGhostDown.png");
-                        break;
-                    }
+                    break;
                 }
-                break;
+                case PINK: {
+                    switch (direction) {
+                        case LEFT: {
+                            oo = new ImageIcon("Pinky\\PinkyLeftGif.gif");
+                            break;
+                        }
+                        case RIGHT: {
+                            oo = new ImageIcon("Pinky\\PinkyRightGif.gif");
+                            break;
+                        }
+                        case UP: {
+                            oo = new ImageIcon("Pinky\\PinkyUpGif.gif");
+                            break;
+                        }
+                        case DOWN: {
+                            oo = new ImageIcon("Pinky\\PinkyDownGif.gif");
+                            break;
+                        }
+                    }
+                    break;
+                }
             }
         }
         image = oo.getImage();
@@ -122,7 +136,7 @@ public class Ghost extends Pacman{
         ImageIcon oo = new ImageIcon("redGhost.png");
         switch (ghostType) {
             case RED: {
-                oo = new ImageIcon("pacWHOLE.png");
+                oo = new ImageIcon("Blinkey\\BlinkeyRightGif.gif");
                 break;
             }
             case BLUE: {
@@ -134,7 +148,7 @@ public class Ghost extends Pacman{
                 break;
             }
             case PINK: {
-                oo = new ImageIcon("pinkGhost.png");
+                oo = new ImageIcon("Pinky\\PinkyRightGif.gif");
                 break;
             }
         }
@@ -173,5 +187,13 @@ public class Ghost extends Pacman{
 
     public void setTimer(int timer) {
         this.timer = timer;
+    }
+
+    public void setFrightened(boolean b) {
+        frigtened = b;
+    }
+
+    public boolean isFrigtened() {
+        return frigtened;
     }
 }

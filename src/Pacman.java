@@ -17,6 +17,15 @@ public class Pacman {
 
 
     protected int position_x;
+
+    public int getStartingX() {
+        return startingX;
+    }
+
+    public int getStartingY() {
+        return startingY;
+    }
+
     protected int startingX;
     protected int startingY;
     protected int position_y;
@@ -36,7 +45,16 @@ public class Pacman {
     private boolean bonusStatus;
     public static final int INVURNERABLE_BONUS = 1000;
     public static final int INVURNERABLE_DIE = 500 ;
+    protected int speed;
+    protected final int STANDARD_SPEED = 2;
 
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
 
     public Pacman(int position_x, int position_y, int direction) {
         this.position_x = position_x;
@@ -46,6 +64,7 @@ public class Pacman {
         this.startingX = position_x;
         this.startingY = position_y;
 
+        this.speed = STANDARD_SPEED;
         this.invurnerableFrames = 0;
         this.bonusStatus = false;
 
@@ -116,12 +135,12 @@ public class Pacman {
         }
     }
 
-    public Rectangle getTestCollisionSprite() {
+    public Rectangle getAIPlayerCollisionSprite() {
 
         if (dx < 0 || dy < 0) {
-            return new Rectangle(getXPosition() + dx, getYPosition() + dy, 25, 25);
+            return new Rectangle(getXPosition() + dx +12, getYPosition() + dy +12 , 25, 25);
         } else {
-            return new Rectangle(getXPosition(), getYPosition(), 25+dx, 25+dy);
+            return new Rectangle(getXPosition() +12 , getYPosition() +12 , 25+dx, 25+dy);
         }
     }
 
@@ -129,16 +148,16 @@ public class Pacman {
 
         switch (direction) {
             case LEFT: {
-                return new Rectangle(getXPosition() - 2, getYPosition(), getWidth(), getHeight() - 1);
+                return new Rectangle(getXPosition() - getSpeed(), getYPosition(), getWidth(), getHeight() - 1);
             }
             case RIGHT: {
-                return new Rectangle(getXPosition(), getYPosition(), getWidth() + 2, getHeight() - 1);
+                return new Rectangle(getXPosition(), getYPosition(), getWidth() + getSpeed(), getHeight() - 1);
             }
             case UP: {
-                return new Rectangle(getXPosition(), getYPosition() - 2, getWidth(), getHeight() - 1);
+                return new Rectangle(getXPosition(), getYPosition() - getSpeed(), getWidth(), getHeight() - 1);
             }
             case DOWN: {
-                return new Rectangle(getXPosition(), getYPosition(), getWidth(), getHeight() - 1 + 2);
+                return new Rectangle(getXPosition(), getYPosition(), getWidth(), getHeight() - 1 + getSpeed());
             }
             default: {
                 return new Rectangle(getXPosition(), getYPosition(), getWidth(), getHeight());              // nie powinien się nigdy wczytać
@@ -174,16 +193,16 @@ public class Pacman {
     public void setDYDX(int direction) {
         switch (direction) {
             case LEFT:
-                this.dx = -2;
+                this.dx = -getSpeed();
                 break;
             case RIGHT:
-                this.dx = 2;
+                this.dx = getSpeed();
                 break;
             case UP:
-                this.dy = -2;
+                this.dy = -getSpeed();
                 break;
             case DOWN:
-                this.dy = 2;
+                this.dy = getSpeed();
                 break;
         }
     }
@@ -201,23 +220,23 @@ public class Pacman {
         int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_LEFT) {
-            dx = -2;
+            dx = -getSpeed();
             dy = 0;
             setDirection(LEFT);
 
         } else if (key == KeyEvent.VK_RIGHT) {
 
-            dx = 2;
+            dx = getSpeed();
             dy = 0;
             setDirection(RIGHT);
         } else if (key == KeyEvent.VK_UP) {
 
-            dy = -2;
+            dy = -getSpeed();
             dx = 0;
             setDirection(UP);
         } else if (key == KeyEvent.VK_DOWN) {
 
-            dy = 2;
+            dy = getSpeed();
             dx = 0;
             setDirection(DOWN);
         }
