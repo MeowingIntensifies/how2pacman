@@ -115,6 +115,7 @@ public class LevelMap {
     public boolean isPointListEmpty(){
         return listaPunktowMapy.isEmpty();
     }
+    public boolean isBonusPointListEmpty(){return listaBonusowMapy.isEmpty();}
 
     private void constructMap (int level) {
         ghostDataList = new ArrayList<>();

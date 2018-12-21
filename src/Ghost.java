@@ -15,6 +15,7 @@ public class Ghost extends Pacman{
     private int spawnTimer;
     private int timer;
     private boolean frigtened;
+    private boolean scaredOnce;
 
     public Ghost(int position_x, int position_y, int direction, int ghostType, int spawnTimer, int respawnTimer) {
         super(position_x, position_y, direction);
@@ -23,11 +24,13 @@ public class Ghost extends Pacman{
         this.respawnTimer = respawnTimer;
         this.timer = spawnTimer;
         this.isAlive = false;
+        this.scaredOnce = false;
 
         this.loadImage(ghostType);
 
 
     }
+
     public int getGhostType(){
         return ghostType;
     }
@@ -196,4 +199,8 @@ public class Ghost extends Pacman{
     public boolean isFrigtened() {
         return frigtened;
     }
+
+    public boolean wasScaredOnce() {return scaredOnce; }
+
+    public void setScaredOnce(boolean b) { scaredOnce = b; }
 }

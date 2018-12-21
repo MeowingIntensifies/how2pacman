@@ -40,14 +40,14 @@ public class Collision {
     public boolean checkForPoints(){
       return checkPointCollsion(pacman.getCollisionSprite(), level.getMapPointList());  //sprawdzanie kolizji gracza z punktami
     }
-    public boolean checkForBonusPoints(){
-        return checkBonusPointCollsion(pacman.getCollisionSprite(), level.getMapBonusPointList());  //sprawdzanie kolizji gracza z punktami
+    public boolean checkForBonusPoints(List<Ghost> ghostList){
+        return checkBonusPointCollsion(pacman.getCollisionSprite(), level.getMapBonusPointList(), ghostList);  //sprawdzanie kolizji gracza z punktami
     }
 
     public boolean checkforPacmanGhost(ArrayList<Ghost> ghostList) {
         for (Ghost ghost : ghostList) {
             if (ghost.getAIPlayerCollisionSprite().intersects(pacman.getAIPlayerCollisionSprite())) {
-                if (pacman.getBonusStatus()) {
+                if (pacman.getBonusStatus() && !ghost.wasScaredOnce()) {
                     ghost.setIsAlive(false);
                 }else{
                     ghost.returnToStartingPoint();
@@ -80,12 +80,15 @@ public class Collision {
         }
         return false;
     }
-    private boolean checkBonusPointCollsion(Rectangle pacmanSprite, List<Rectangle> mapPointList) {
+    private boolean checkBonusPointCollsion(Rectangle pacmanSprite, List<Rectangle> mapPointList, List<Ghost> ghostsList) {
         for (Rectangle kkk : mapPointList) {
             if (kkk.intersects(pacmanSprite)) {
                 level.removeBonusPoint(kkk);
                 pacman.setBonusStatus(true);
                 pacman.setInvurnerable(Pacman.INVURNERABLE_BONUS);
+                for(Ghost ghost : ghostsList){
+                    ghost.setScaredOnce(false);
+                }
                 return true;
             }
         }

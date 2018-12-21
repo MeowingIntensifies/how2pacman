@@ -21,12 +21,30 @@ public class GhostsAI {
 
     public void makeGhostsMove() {
         for (Ghost ghost : ghostList) {
-            if (ghost.getIsAlive() == false){                                                                             // sprawdzamy czy duszek nie umarł
+            if (pacman.getBonusStatus() && ghost.getIsAlive() && ghost.wasScaredOnce() == false) {
+                ghost.setFrightened(true);
+                ghost.setSpeed(Ghost.SLOW);
+                frightenedMove(ghost);
+                ghost.stop();
+                if (ghost.getXPosition() % 50 == 0 &&  ghost.getYPosition() % 50 == 0 ){
+                    ghost.setDYDX(ghost.getDirection());
+                }else{
+                    if(!collsion.checkMapCollision(ghost.getCollisionSprite(), level.getMapCollsionList()))
+                    ghost.returnLastMove();
+                    else{
+                        ghost.stop();
+                    }
+                }
+                ghost.move();
+                continue;
+            }
+            if (ghost.getIsAlive() == false){
+                ghost.setScaredOnce(true);
+                ghost.setFrightened(false);
                 if(ghost.getXPosition() != GHOST_GRAVEYARD_X  && ghost.getYPosition() != GHOST_GRAVEYARD_Y ) {              // sprawdzamy czy już nie znajduje się na cmentarzu (poza mapą)// jeśli nie znaczy że jest tu pierwszy raz i nakładamy na niego nieśmiertelność
                     ghost.setXPositon(GHOST_GRAVEYARD_X);                                                                   // przenosimy pacmana na cmętarz
                     ghost.setYPositon(GHOST_GRAVEYARD_Y);
                 }
-                                                                                                                               //dążymy do zmniejszenia
                 if(!shouldWeMove(ghost)){
                     ghost.stop();
                     ghost.setTimer(ghost.getTimer() - Board.DELAY);
@@ -37,49 +55,38 @@ public class GhostsAI {
                     ghost.returnToStartingPoint();
                 }
             }
-            if (pacman.getBonusStatus() && ghost.getXPosition() != ghost.getStartingX() && ghost.getStartingY() != ghost.getYPosition() ){
-                ghost.setFrightened(true);
-                ghost.setSpeed(Ghost.SLOW);
-                if (frightenedMove(ghost) == -1 ){
-                    ghost.stop();
-                    ghost.returnLastMove();
-                    if(collsion.checkMapCollision(ghost.getCollisionSprite(ghost.getDirection()), level.getMapCollsionList())){
-                        ghost.stop();
-                        ghost.setDYDX(getReverseDirection(ghost));
-                    }
-
-                } else {
-                    ghost.stop();
-                    ghost.setDYDX(ghost.getDirection());
-                }
-                ghost.move();
-
-            }else{
-                ghost.setSpeed(ghost.STANDARD_SPEED);
-                ghost.setFrightened(false);
-                whereToGhost(ghost, ghost.getGhostType());
-                ghost.stop();
-                ghost.setDYDX(ghost.getDirection());
-                ghost.move();
+            ghost.setSpeed(ghost.STANDARD_SPEED);
+            ghost.setFrightened(false);
+            whereToGhost(ghost, ghost.getGhostType());
+            ghost.stop();
+            ghost.setDYDX(ghost.getDirection());
+            ghost.move();
             }
 
         }
-    }
 
     private  int frightenedMove(Ghost ghost) {
+        int tries = 0;
         int tempDirection = -1;
         Random rand = new Random();
-        int trys =0;
-        if (ghost.getXPosition() % 50 == 0 || ghost.getYPosition() % 50 == 0) {
-            while (tempDirection == -1 && trys < 8 ) {
+        if (ghost.getXPosition() % 50 == 0 && ghost.getYPosition() % 50 == 0) {
+            while (tries < 40) {
                 int moreTempDir = rand.nextInt(4) + 1;
                 if (!collsion.checkMapCollision(ghost.getCollisionSprite(moreTempDir), level.getMapCollsionList()) && getReverseDirection(ghost) != moreTempDir) {
                     tempDirection = moreTempDir;
                     break;
                 }
-                trys++;
+                tries++;
+            }
+            if (tempDirection == -1) {
+                tempDirection = getReverseDirection(ghost);
             }
         }
+
+        if (tempDirection != -1) {
+            ghost.setDirection(tempDirection);
+        }
+        System.out.println(ghost.getYPosition() + " " + ghost.getXPosition());
         return tempDirection;
     }
 
@@ -103,11 +110,6 @@ public class GhostsAI {
         int directionY = 0;
         int directionX = 0;
         switch (proposedDirection) {
-
-            /* odrócone kierunki ze względu na to, że tradycyjny
-             * wzór na obliczanie odległości współpracuje z tradycyjną siatką;
-             * tutaj obecna jest odwrócona
-             * */
 
             case Ghost.UP: {
                 directionY = -1;

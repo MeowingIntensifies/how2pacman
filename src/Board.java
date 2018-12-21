@@ -33,11 +33,6 @@ public class Board extends JPanel implements ActionListener {
         initBoard(lvl);
     }
 
-    public  void loadBar(){
-        ImageIcon ii = new ImageIcon("barUI.png");
-        downBar = ii.getImage();
-    }
-
     private void initBoard(int gameLevel) {
 
         this.setFocusable(true);
@@ -65,6 +60,11 @@ public class Board extends JPanel implements ActionListener {
         timer.start();
     }
 
+    public  void loadBar(){
+        ImageIcon ii = new ImageIcon("barUI.png");
+        downBar = ii.getImage();
+    }
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
@@ -82,6 +82,7 @@ public class Board extends JPanel implements ActionListener {
 
         g2d.drawImage(downBar, 0,
                 800, this);
+
         if(pointTimer > 0) {
             g2d.drawString("Zostało " + pointTimer / 100 + " bonusowych sekund ", 300, 820);
         }else {
@@ -93,6 +94,7 @@ public class Board extends JPanel implements ActionListener {
             g2d.drawImage(pacman.getLifesImage(), 50 + u * 50,
                     860, this);
         }
+
         g2d.drawString("Masz " + points + " punktow", 50, 820);
 
         for (int i = 0; i < level.getSizeX(); i++) {
@@ -127,7 +129,7 @@ public class Board extends JPanel implements ActionListener {
 
 
     private void didWeWin() {
-        if (level.isPointListEmpty())                                        // jeśli lista punktow jest pusta, stworz nową planszę;
+        if (level.isPointListEmpty() && level.isBonusPointListEmpty())                                        // jeśli lista punktow jest pusta, stworz nową planszę;
         {
             timer.stop();
             increaseLife();
@@ -170,7 +172,7 @@ public class Board extends JPanel implements ActionListener {
             pacman.setBonusStatus(false);
         }
 
-        if (collision.checkForBonusPoints() || collision.checkForPoints()) {
+        if (collision.checkForBonusPoints(ghostList) || collision.checkForPoints()) {
             increasePoints();
         }
 
