@@ -26,13 +26,13 @@ public class GhostsAI {
                 ghost.setSpeed(Ghost.SLOW);
                 frightenedMove(ghost);
                 ghost.stop();
-                if (ghost.getXPosition() % 50 == 0 &&  ghost.getYPosition() % 50 == 0 ){
+                if (ghost.getXPosition() % 50 == 0 ||  ghost.getYPosition() % 50 == 0 ){
                     ghost.setDYDX(ghost.getDirection());
                 }else{
                     if(!collsion.checkMapCollision(ghost.getCollisionSprite(), level.getMapCollsionList()))
                     ghost.returnLastMove();
                     else{
-                        ghost.stop();
+                        continue;
                     }
                 }
                 ghost.move();
@@ -133,27 +133,76 @@ public class GhostsAI {
             }
         }
         if (ghostType == 2 ){
-            int inkyCorrection = 4;
+            final  int pinkyCorrection = 4;
             double distance = 0;
             switch (pacman.getDirection()){
                 case Pacman.UP:{
-                  distance = Math.sqrt((int) Math.pow(((pacman.getYPosition() - inkyCorrection)  - (ghost.getYPosition() + directionY))* Board.MAPSHIFT, 2) + (int) Math.pow((pacman.getXPosition() - (ghost.getXPosition() + directionX))* Board.MAPSHIFT, 2));
+                  distance = Math.sqrt((int) Math.pow(((pacman.getYPosition() - pinkyCorrection)  - (ghost.getYPosition() + directionY))* Board.MAPSHIFT, 2) + (int) Math.pow((pacman.getXPosition() - (ghost.getXPosition() + directionX))* Board.MAPSHIFT, 2));
                 }
                 case Pacman.DOWN:{
-                    distance = Math.sqrt((int) Math.pow(((pacman.getYPosition() + inkyCorrection) - (ghost.getYPosition()  + directionY)) * Board.MAPSHIFT, 2) + (int) Math.pow((pacman.getXPosition() - (ghost.getXPosition() + directionX)) * Board.MAPSHIFT, 2));
+                    distance = Math.sqrt((int) Math.pow(((pacman.getYPosition() + pinkyCorrection) - (ghost.getYPosition()  + directionY)) * Board.MAPSHIFT, 2) + (int) Math.pow((pacman.getXPosition() - (ghost.getXPosition() + directionX)) * Board.MAPSHIFT, 2));
                 }
                 case Pacman.RIGHT:{
-                    distance = Math.sqrt((int) Math.pow((pacman.getYPosition() - (ghost.getYPosition()  + directionY)) * Board.MAPSHIFT, 2) + (int) Math.pow(((pacman.getXPosition()+ inkyCorrection) - (ghost.getXPosition() + directionX)) * Board.MAPSHIFT, 2));
+                    distance = Math.sqrt((int) Math.pow((pacman.getYPosition() - (ghost.getYPosition()  + directionY)) * Board.MAPSHIFT, 2) + (int) Math.pow(((pacman.getXPosition()+ pinkyCorrection) - (ghost.getXPosition() + directionX)) * Board.MAPSHIFT, 2));
                 }
                 case Pacman.LEFT:{
-                    distance = Math.sqrt((int) Math.pow((pacman.getYPosition() - (ghost.getYPosition()  + directionY)) * Board.MAPSHIFT, 2) + (int) Math.pow(((pacman.getXPosition()-inkyCorrection) - (ghost.getXPosition() + directionX)) * Board.MAPSHIFT, 2));
+                    distance = Math.sqrt((int) Math.pow((pacman.getYPosition() - (ghost.getYPosition()  + directionY)) * Board.MAPSHIFT, 2) + (int) Math.pow(((pacman.getXPosition()-pinkyCorrection) - (ghost.getXPosition() + directionX)) * Board.MAPSHIFT, 2));
                 }
             }
             return distance;
         }
+        if (ghostType == 3 ){
+            int inkyCorrection = 2;                                                         // wartosci "correction" służą do poprawiania pozycji pakmana tak, żeby duszki celowały przed nim (zależne od AI)
+            int tempPacX = 0;
+            int tempPacY = 0;
+            int tempBlinkeyX = getBlinkeyXY('x');
+            int tempBlinkeyY = getBlinkeyXY('y');
+            int finalDestinationX;
+            int finalDestinationY;
+            switch (pacman.getDirection()){
+                case Pacman.UP:{
+                     tempPacX =pacman.getXPosition();
+                     tempPacY =pacman.getYPosition()- inkyCorrection;
+                }
+                case Pacman.DOWN:{
+                     tempPacX =pacman.getXPosition();
+                     tempPacY =pacman.getYPosition()+inkyCorrection;
+                }
+                case Pacman.RIGHT:{
+                     tempPacX =pacman.getXPosition()+inkyCorrection;
+                     tempPacY =pacman.getYPosition();
+                }
+                case Pacman.LEFT:{
+
+                     tempPacX =pacman.getXPosition() - inkyCorrection;
+                     tempPacY =pacman.getYPosition();
+                }
+            }
+            finalDestinationY = tempPacY + tempBlinkeyY;
+            finalDestinationX = tempPacX + tempBlinkeyX;
+
+            double distance = Math.sqrt((int) Math.pow((finalDestinationY - (ghost.getYPosition()  + directionY)) * Board.MAPSHIFT, 2) + (int) Math.pow((finalDestinationX - (ghost.getXPosition() + directionX)) * Board.MAPSHIFT, 2));
+            return distance;
+        }
+
 
         double distance = Math.sqrt((int) Math.pow((pacman.getYPosition() - (ghost.getYPosition()  + directionY)) * Board.MAPSHIFT, 2) + (int) Math.pow((pacman.getXPosition() - (ghost.getXPosition() + directionX)) * Board.MAPSHIFT, 2));
         return distance;
+    }
+
+    private int getBlinkeyXY(char dimension) {
+        int value = 0;                                                                               // wartosc ustalona tak, by wiadomo było że doszło do nieprzewidzianej sytuacji (duszek kieruje się do 0,0
+        for (Ghost ghost : ghostList) {
+            if (ghost.getGhostType() !=1) {
+                break;
+            }
+            if (dimension == 'x') {
+                value = ghost.getXPosition();
+            } else if (dimension == 'y') {
+                value = ghost.getYPosition();
+            }
+        }
+        return value;
     }
 
     private int checkWhereAndIfShouldTurn(Ghost ghosty) {
@@ -173,7 +222,7 @@ public class GhostsAI {
                 }
             }
             if (tempDistance == 0) {
-                tempDirection = getReverseDirection(ghosty);
+                //tempDirection = getReverseDirection(ghosty);
             }
         }
         ghosty.setDirection(tempDirection);

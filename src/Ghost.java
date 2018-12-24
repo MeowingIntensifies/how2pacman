@@ -4,8 +4,8 @@ import java.awt.*;
 public class Ghost extends Pacman{
 
     public static final int RED =  1;
-    public static final int BLUE = 4;
-    public static final int ORANG = 3;
+    public static final int BLUE = 3;
+    public static final int ORANG = 4;
     public static final int PINK = 2;
     public static final int SLOW = 1;
 
@@ -28,6 +28,28 @@ public class Ghost extends Pacman{
 
         this.loadImage(ghostType);
 
+
+    }
+
+    public Rectangle getCollisionSprite(int direction) {                                    //dostosowane do obrazka 50x50
+
+        switch (direction) {
+            case LEFT: {
+                return new Rectangle(getXPosition() - getSpeed(), getYPosition(), getWidth(), getHeight() );
+            }
+            case RIGHT: {
+                return new Rectangle(getXPosition(), getYPosition(), getWidth() + getSpeed(), getHeight());
+            }
+            case UP: {
+                return new Rectangle(getXPosition(), getYPosition() - getSpeed(), getWidth(), getHeight());
+            }
+            case DOWN: {
+                return new Rectangle(getXPosition(), getYPosition(), getWidth(), getHeight() + getSpeed());
+            }
+            default: {
+                return new Rectangle(getXPosition(), getYPosition(), getWidth(), getHeight());              // nie powinien się nigdy wczytać
+            }
+        }
 
     }
 
@@ -67,19 +89,19 @@ public class Ghost extends Pacman{
                 case BLUE: {
                     switch (direction) {
                         case LEFT: {
-                            oo = new ImageIcon("blueGhostLeft.png");
+                            oo = new ImageIcon("Inky\\InkyLeftGif.gif");
                             break;
                         }
                         case RIGHT: {
-                            oo = new ImageIcon("blueGhostRight.png");
+                            oo = new ImageIcon("Inky\\InkyRightGif.gif");
                             break;
                         }
                         case UP: {
-                            oo = new ImageIcon("blueGhostUp.png");
+                            oo = new ImageIcon("Inky\\InkyUpGif.gif");
                             break;
                         }
                         case DOWN: {
-                            oo = new ImageIcon("blueGhostDown.png");
+                            oo = new ImageIcon("Inky\\InkyDownGif.gif");
                             break;
                         }
                     }
@@ -88,19 +110,19 @@ public class Ghost extends Pacman{
                 case ORANG: {
                     switch (direction) {
                         case LEFT: {
-                            oo = new ImageIcon("orangGhostLeft.png");
+                            oo = new ImageIcon("Clyde\\ClydeLeftGif.gif");
                             break;
                         }
                         case RIGHT: {
-                            oo = new ImageIcon("orangGhostRight.png");
+                            oo = new ImageIcon("Clyde\\ClydeRightGif.gif");
                             break;
                         }
                         case UP: {
-                            oo = new ImageIcon("orangGhostUp.png");
+                            oo = new ImageIcon("Clyde\\ClydeUpGif.gif");
                             break;
                         }
                         case DOWN: {
-                            oo = new ImageIcon("orangGhostDown.png");
+                            oo = new ImageIcon("Clyde\\ClydeDownGif.gif");
                             break;
                         }
                     }
