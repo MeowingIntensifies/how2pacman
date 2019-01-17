@@ -109,44 +109,48 @@ public class GhostsAI {
     private double getDistance(Ghost ghost, Pacman pacman, int proposedDirection, int ghostType) {
         int directionY = 0;
         int directionX = 0;
+        double distance = 0;
         switch (proposedDirection) {
 
-            case Ghost.UP: {
-                directionY = -1;
-                directionX = 0;
-                break;
+                case Ghost.UP: {
+                    directionY = -2;
+                    directionX = 0;
+                    break;
+                }
+                case Ghost.LEFT: {
+                    directionY = 0;
+                    directionX = -2;
+                    break;
+                }
+                case Ghost.RIGHT: {
+                    directionY = 0;
+                    directionX = 2;
+                    break;
+                }
+                case Ghost.DOWN: {
+                    directionY = 2;
+                    directionX = 0;
+                    break;
+                }
             }
-            case Ghost.LEFT: {
-                directionY = 0;
-                directionX = -1;
-                break;
-            }
-            case Ghost.RIGHT: {
-                directionY = 0;
-                directionX = 1;
-                break;
-            }
-            case Ghost.DOWN: {
-                directionY = 1;
-                directionX = 0;
-                break;
-            }
-        }
         if (ghostType == 2 ){
             final  int pinkyCorrection = 4;
-            double distance = 0;
             switch (pacman.getDirection()){
                 case Pacman.UP:{
                   distance = Math.sqrt((int) Math.pow(((pacman.getYPosition() - pinkyCorrection)  - (ghost.getYPosition() + directionY))* Board.MAPSHIFT, 2) + (int) Math.pow((pacman.getXPosition() - (ghost.getXPosition() + directionX))* Board.MAPSHIFT, 2));
+                  break;
                 }
                 case Pacman.DOWN:{
                     distance = Math.sqrt((int) Math.pow(((pacman.getYPosition() + pinkyCorrection) - (ghost.getYPosition()  + directionY)) * Board.MAPSHIFT, 2) + (int) Math.pow((pacman.getXPosition() - (ghost.getXPosition() + directionX)) * Board.MAPSHIFT, 2));
+                    break;
                 }
                 case Pacman.RIGHT:{
                     distance = Math.sqrt((int) Math.pow((pacman.getYPosition() - (ghost.getYPosition()  + directionY)) * Board.MAPSHIFT, 2) + (int) Math.pow(((pacman.getXPosition()+ pinkyCorrection) - (ghost.getXPosition() + directionX)) * Board.MAPSHIFT, 2));
+                    break;
                 }
                 case Pacman.LEFT:{
                     distance = Math.sqrt((int) Math.pow((pacman.getYPosition() - (ghost.getYPosition()  + directionY)) * Board.MAPSHIFT, 2) + (int) Math.pow(((pacman.getXPosition()-pinkyCorrection) - (ghost.getXPosition() + directionX)) * Board.MAPSHIFT, 2));
+                    break;
                 }
             }
             return distance;
@@ -163,30 +167,43 @@ public class GhostsAI {
                 case Pacman.UP:{
                      tempPacX =pacman.getXPosition();
                      tempPacY =pacman.getYPosition()- inkyCorrection;
+                     break;
                 }
                 case Pacman.DOWN:{
                      tempPacX =pacman.getXPosition();
                      tempPacY =pacman.getYPosition()+inkyCorrection;
+                     break;
                 }
                 case Pacman.RIGHT:{
                      tempPacX =pacman.getXPosition()+inkyCorrection;
                      tempPacY =pacman.getYPosition();
+                     break;
                 }
                 case Pacman.LEFT:{
 
                      tempPacX =pacman.getXPosition() - inkyCorrection;
                      tempPacY =pacman.getYPosition();
+                     break;
                 }
             }
             finalDestinationY = tempPacY + tempBlinkeyY;
             finalDestinationX = tempPacX + tempBlinkeyX;
 
-            double distance = Math.sqrt((int) Math.pow((finalDestinationY - (ghost.getYPosition()  + directionY)) * Board.MAPSHIFT, 2) + (int) Math.pow((finalDestinationX - (ghost.getXPosition() + directionX)) * Board.MAPSHIFT, 2));
+            distance = Math.sqrt((int) Math.pow((finalDestinationY - (ghost.getYPosition()  + directionY)) * Board.MAPSHIFT, 2) + (int) Math.pow((finalDestinationX - (ghost.getXPosition() + directionX)) * Board.MAPSHIFT, 2));
             return distance;
         }
+        if (ghostType == 4){
 
+            if(Math.sqrt((int) Math.pow((pacman.getYPosition() - (ghost.getYPosition()  + directionY)) * Board.MAPSHIFT, 2) + (int) Math.pow((pacman.getXPosition() - (ghost.getXPosition() + directionX)) * Board.MAPSHIFT, 2))/2500 > 8) {
+                distance = Math.sqrt((int) Math.pow((pacman.getYPosition() - (ghost.getYPosition() + directionY)) * Board.MAPSHIFT, 2) + (int) Math.pow((pacman.getXPosition() - (ghost.getXPosition() + directionX)) * Board.MAPSHIFT, 2));
+                return distance;
+            }else{
+                distance = Math.sqrt((int) Math.pow((ghost.getClydePointY() - (ghost.getYPosition() + directionY)) * Board.MAPSHIFT, 2) + (int) Math.pow((ghost.getClydePointX()- (ghost.getXPosition() + directionX)) * Board.MAPSHIFT, 2));
+                return distance;
+            }
+        }
 
-        double distance = Math.sqrt((int) Math.pow((pacman.getYPosition() - (ghost.getYPosition()  + directionY)) * Board.MAPSHIFT, 2) + (int) Math.pow((pacman.getXPosition() - (ghost.getXPosition() + directionX)) * Board.MAPSHIFT, 2));
+        distance = Math.sqrt((int) Math.pow((pacman.getYPosition() - (ghost.getYPosition()  + directionY)) * Board.MAPSHIFT, 2) + (int) Math.pow((pacman.getXPosition() - (ghost.getXPosition() + directionX)) * Board.MAPSHIFT, 2));
         return distance;
     }
 
@@ -220,9 +237,6 @@ public class GhostsAI {
                         tempDirection = i;
                     }
                 }
-            }
-            if (tempDistance == 0) {
-                //tempDirection = getReverseDirection(ghosty);
             }
         }
         ghosty.setDirection(tempDirection);

@@ -16,6 +16,8 @@ public class Ghost extends Pacman{
     private int timer;
     private boolean frigtened;
     private boolean scaredOnce;
+    private int clydePointX;
+    private int clydePointY;
 
     public Ghost(int position_x, int position_y, int direction, int ghostType, int spawnTimer, int respawnTimer) {
         super(position_x, position_y, direction);
@@ -225,4 +227,15 @@ public class Ghost extends Pacman{
     public boolean wasScaredOnce() {return scaredOnce; }
 
     public void setScaredOnce(boolean b) { scaredOnce = b; }
+
+    public void setClydePointX(int nextInt) {this.clydePointX = nextInt;}
+    public void setClydePointY(int nextInt) { this.clydePointY = nextInt;}
+
+    public int getClydePointX() {
+        return clydePointX;
+    }
+
+    public int getClydePointY() {
+        return clydePointY;
+    }
 }

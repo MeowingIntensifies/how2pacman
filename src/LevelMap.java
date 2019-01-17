@@ -15,6 +15,7 @@ public class LevelMap {
     private int actual_map[][];
     private int sizeX;
     private int sizeY;
+    private int levelTimer;
     private  Image blockImage;
     private Image pointImage;
     private Image bonusImage;
@@ -137,7 +138,7 @@ public class LevelMap {
                 pathname = "4.txt";
                 break;
             }
-            case 5: {
+            case 50: {
                 pathname = "5.txt";
                 break;
             }
@@ -152,6 +153,7 @@ public class LevelMap {
                 Scanner in = new Scanner(file);
                 this.sizeX = in.nextInt();
                 this.sizeY = in.nextInt();
+                this.levelTimer = in.nextInt();
                 this.pacmanStartXPosition = in.nextInt();
                 this.pacmanStartYPosition = in.nextInt();
                 this.pacmanStartDirection = in.nextInt();
@@ -162,6 +164,10 @@ public class LevelMap {
                     ghostData.setGhostType(in.nextInt());
                     ghostData.setPositionX(in.nextInt());
                     ghostData.setPositionY(in.nextInt());
+                    if (ghostData.getGhostType() == 4 ){
+                        ghostData.setClydePointX( in.nextInt());
+                        ghostData.setClydePointY( in.nextInt());
+                    }
                     ghostData.setGhostSpawnTimer(in.nextInt());
                     ghostData.setGhostreSpawnTimer(in.nextInt());
                 }
@@ -214,6 +220,10 @@ public class LevelMap {
         }
         return false;
     }
+
+    public int getlevelTimer() {
+        return levelTimer;
     }
+}
 
 

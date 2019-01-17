@@ -2,6 +2,8 @@ public class GhostEntryData {
 
     private int positionY;
     private int positionX;
+    private int clydePointX;
+    private int clydePointY;
     private int ghostType;
     private int ghostreSpawnTimer;
     private int ghostSpawnTimer;
@@ -44,5 +46,16 @@ public class GhostEntryData {
 
     public void setGhostreSpawnTimer(int ghostreSpawnTimer) {
         this.ghostreSpawnTimer = ghostreSpawnTimer;
+    }
+
+    public void setClydePointX(int nextInt) {this.clydePointX = nextInt;}
+    public void setClydePointY(int nextInt) { this.clydePointY = nextInt;}
+
+    public int getClydePointX() {
+        return clydePointX;
+    }
+
+    public int getClydePointY() {
+        return clydePointY;
     }
 }

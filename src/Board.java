@@ -25,12 +25,16 @@ public class Board extends JPanel implements ActionListener {
     private int pointTimer;
 
 
+
     public Board(int lvl) {
         pacmanLifes = 3;
         animationTimer = 0;
-        pointTimer = 4500;
         points = 0;
         initBoard(lvl);
+    }
+
+    public static boolean gameisLost(boolean kek) {
+        return kek;
     }
 
     private void initBoard(int gameLevel) {
@@ -43,6 +47,8 @@ public class Board extends JPanel implements ActionListener {
 
         level = new LevelMap(gameLevel);
 
+        pointTimer = level.getlevelTimer();
+
         pacman = new Pacman(level.getPacmanStartXPosition() * MAPSHIFT, level.getPacmanStartYPosition()*MAPSHIFT, level.getPacmanStartDirection());
 
         collision = new Collision(pacman, level);
@@ -52,6 +58,10 @@ public class Board extends JPanel implements ActionListener {
         for(GhostEntryData ghostData : level.getGhostDataList()){
             Ghost ghost = new Ghost(ghostData.getPositionX()*MAPSHIFT,ghostData.getPositionY()*MAPSHIFT, Ghost.RIGHT, ghostData.getGhostType(),ghostData.getGhostSpawnTimer(),ghostData.getGhostreSpawnTimer());
             ghostList.add(ghost);
+            if(ghost.getGhostType() == 4){
+                ghost.setClydePointX(ghostData.getClydePointX());
+                ghost.setClydePointY(ghostData.getClydePointY());
+            }
         }
 
         ghostsAI = new GhostsAI(ghostList,collision,level,pacman);
@@ -124,6 +134,7 @@ public class Board extends JPanel implements ActionListener {
 
     private void didWeLose() {
         if(pacmanLifes < 0 ){
+            gameisLost(true);
         }
     }
 
