@@ -17,24 +17,30 @@ public class Board extends JPanel implements ActionListener {
     private LevelMap level;
     private Collision collision;
     private GhostsAI ghostsAI;
-    private int animationTimer;
     private ArrayList<Ghost> ghostList;
     private int points;
     private int pacmanLifes;
     private Image downBar;
+    private Image winScreen;
+    private Image loseScreen;
+    private Image scoreScreen;
     private int pointTimer;
+    private int endTimer;
+    private boolean end;
+    private boolean lost;
+    private boolean scoreFlag;
+    private Score newScore;
 
 
 
     public Board(int lvl) {
+        scoreFlag = false;
+        endTimer = 300;
+        lost = false;
+        end = false;
         pacmanLifes = 3;
-        animationTimer = 0;
         points = 0;
         initBoard(lvl);
-    }
-
-    public static boolean gameisLost(boolean kek) {
-        return kek;
     }
 
     private void initBoard(int gameLevel) {
@@ -75,9 +81,23 @@ public class Board extends JPanel implements ActionListener {
         downBar = ii.getImage();
     }
 
+    private void loadWinScreen(){
+        ImageIcon ii = new ImageIcon("winScreen.png");
+        winScreen = ii.getImage();
+    }
+
+    private void loadLoseScreen(){
+        ImageIcon ii = new ImageIcon("loseScreen.png");
+        loseScreen = ii.getImage();
+    }
+
+    private void loadScoreScreen() {
+        ImageIcon ii = new ImageIcon("scoreScreen.png");
+        scoreScreen = ii.getImage();
+    }
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
         doDrawing(g);
 
         Toolkit.getDefaultToolkit().sync();
@@ -87,71 +107,127 @@ public class Board extends JPanel implements ActionListener {
 
         Graphics2D g2d = (Graphics2D) g;
 
-        g2d.drawImage(pacman.getImage(), pacman.getXPosition(),
-                pacman.getYPosition(), this);
+        g2d.setPaint(Color.yellow);
+        g2d.setFont(new Font ("Arial",Font.PLAIN ,20));
 
-        g2d.drawImage(downBar, 0,
-                800, this);
+        if(end == false) {
+            g2d.drawImage(pacman.getImage(), pacman.getXPosition(),
+                    pacman.getYPosition(), this);
 
-        if(pointTimer > 0) {
-            g2d.drawString("Zostało " + pointTimer / 100 + " bonusowych sekund ", 300, 820);
-        }else {
-            g2d.drawString("Zostało " + 0 + " bonusowych sekund ", 300, 820);
-        }
+            g2d.drawImage(downBar, 0,
+                    800, this);
+
+            if (pointTimer > 0) {
+                g2d.drawString("Zostało " + pointTimer / 100 + " bonusowych sekund ", 300, 820);
+            } else {
+                g2d.drawString("Zostało " + 0 + " bonusowych sekund ", 300, 820);
+            }
 
 
-        for (int u = 0; u < getLifes(); u++) {
-            g2d.drawImage(pacman.getLifesImage(), 50 + u * 50,
-                    860, this);
-        }
+            for (int u = 0; u < getLifes(); u++) {
+                g2d.drawImage(pacman.getLifesImage(), 50 + u * 50,
+                        860, this);
+            }
 
-        g2d.drawString("Masz " + points + " punktow", 50, 820);
+            g2d.drawString("Masz " + points + " punktow", 50, 820);
 
-        for (int i = 0; i < level.getSizeX(); i++) {
-            for (int j = 0; j < level.getSizeY(); j++) {
-                if (level.getMapValue(i, j) == 2) {
-                    g2d.drawImage(level.getBlockImage(), i * MAPSHIFT, j * MAPSHIFT, this);
-                }
-                if (level.getMapValue(i, j) == 1 && level.isOnPointList(i, j)) {
-                    g2d.drawImage(level.getPointImage(), i * MAPSHIFT, j * MAPSHIFT, this);
-                }
-                if (level.getMapValue(i, j) == 3 && level.isOnBonusList(i, j)) {
-                    g2d.drawImage(level.getBonusImage(), i * MAPSHIFT, j * MAPSHIFT, this);
+            for (int i = 0; i < level.getSizeX(); i++) {
+                for (int j = 0; j < level.getSizeY(); j++) {
+                    if (level.getMapValue(i, j) == 2) {
+                        g2d.drawImage(level.getBlockImage(), i * MAPSHIFT, j * MAPSHIFT, this);
+                    }
+                    if (level.getMapValue(i, j) == 1 && level.isOnPointList(i, j)) {
+                        g2d.drawImage(level.getPointImage(), i * MAPSHIFT, j * MAPSHIFT, this);
+                    }
+                    if (level.getMapValue(i, j) == 3 && level.isOnBonusList(i, j)) {
+                        g2d.drawImage(level.getBonusImage(), i * MAPSHIFT, j * MAPSHIFT, this);
+                    }
                 }
             }
+            for (Ghost ghost : ghostList) {
+                g2d.drawImage(ghost.getImage(), ghost.getXPosition(),
+                        ghost.getYPosition(), this);
+            }
+        }else if (scoreFlag == false){
+            if (isLost()== false) {
+                loadWinScreen();
+                g2d.drawImage(winScreen, 0, 0, this);
+            }else{
+                loadLoseScreen();
+                g2d.drawImage(loseScreen, 0, 0, this);
+            }
+                g2d.setPaint(Color.yellow);
+                g2d.setFont(new Font ("Arial", Font.BOLD, 80));
+                String tempScore = String.valueOf(getPoints());
+                g2d.drawString(tempScore, 525, 550);
+            }else{
+                loadScoreScreen();
+                g2d.drawImage(scoreScreen, 0, 0, this);
+                g2d.setPaint(Color.yellow);
+                g2d.setFont(new Font ("Deja Vu Serif", Font.PLAIN, 40));
+                 for (int i = 0; i < 10; i++) {
+                     g2d.drawString(i + 1 + " ",  120, (i+5)*50);
+                     g2d.drawString(newScore.getScores(i,0),  220, (i+5)*50);
+                     g2d.drawString(newScore.getScores(i,1),  720, (i+5)*50);
+                     }
+            }
         }
-        for(Ghost ghost : ghostList){
-            g2d.drawImage(ghost.getImage(), ghost.getXPosition(),
-                    ghost.getYPosition(), this);
+
+
+    public void actionPerformed(ActionEvent e ) {
+        if (didWeLose() == false && didWeWin() == false) {
+            step();
+        } else {
+            if (endTimer < 0) {
+                timer.stop();
+                newScore = new Score();
+                newScore.setHighScore(points);
+                scoreFlag = true;
+                repaint();
+            } else {
+                endTimer--;
+            }
         }
     }
 
-    public void actionPerformed(ActionEvent e) {
-        didWeLose();
-        didWeWin();
-        step();
-    }
-
-    private void didWeLose() {
-        if(pacmanLifes < 0 ){
-            gameisLost(true);
+    private boolean didWeLose() {
+        if(end == true) {
+            return true;
         }
+
+        if((pacmanLifes < 0) ){
+            addTimerPoints();
+            end = true;
+            setLost(true);
+            repaint();
+            return true;
+        }
+        return false;
     }
 
 
-    private void didWeWin() {
+    private boolean didWeWin() {
         if (level.isPointListEmpty() && level.isBonusPointListEmpty())                                        // jeśli lista punktow jest pusta, stworz nową planszę;
         {
-            timer.stop();
             increaseLife();
             addTimerPoints();
-            initBoard(level.getCurrentLevel() + 1);
+            if(LevelMap.isNextLevelThere(level.getCurrentLevel()+1)) {
+                initBoard(level.getCurrentLevel() + 1);
+            }else{
+                end = true;
+            }
             repaint();
+            return true;
         }
+        return false;
     }
 
     private void increaseLife() {
-        this.pacmanLifes++;
+        if(getLifes() < 10) {
+            this.pacmanLifes++;
+        }else{
+            increasePoints(1000);
+        }
     }
 
     private void loseLife() {
@@ -229,17 +305,27 @@ public class Board extends JPanel implements ActionListener {
     private void decreasePointTimer() {
         pointTimer --;
     }
+    public int getPoints(){
+        return points;
+    }
 
     public void increasePoints () {
             points += 10;
         }
-
         public void increasePoints (int points) {
             this.points += points;
         }
 
+    public void setLost(boolean lost) {
+        this.lost = lost;
+    }
 
-        private class TAdapter extends KeyAdapter {
+    public boolean isLost() {
+        return lost;
+    }
+
+
+    private class TAdapter extends KeyAdapter {
 
             public void keyPressed(KeyEvent e) {
                 pacman.keyPressed(e);

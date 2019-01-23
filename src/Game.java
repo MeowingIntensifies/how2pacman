@@ -6,7 +6,6 @@ import javax.swing.*;
 public class Game extends JFrame {
 
     public static  int lvl = -1;
-    Image titleScreen;
 
     public Game(int lvl) {
 
@@ -19,7 +18,7 @@ public class Game extends JFrame {
         private void initUI( int  lvl) {
                 add(new Board(lvl));
 
-                setTitle("Pacman ver 0.78");
+                setTitle("Pacman ver 0.80");
                 setSize(1200, 1000);
 
                 setLocationRelativeTo(null);
@@ -30,7 +29,7 @@ public class Game extends JFrame {
             private void initMenu() {
                 createMenuBar();
                 System.out.println("fugg");
-                setTitle("Pacman ver 0.79");
+                setTitle("Pacman ver 0.80");
                 setSize(300, 550);
 
                 setLocationRelativeTo(null);
@@ -61,9 +60,15 @@ public class Game extends JFrame {
             eMenuItem3.setToolTipText("Zacznij grę od podanego poziomu");
             eMenuItem3.addActionListener((event) -> chooseLevel());
 
+            var eMenuItem4 = new JMenuItem("Najlepsze wyniki", exitIcon);
+            eMenuItem3.setMnemonic(KeyEvent.VK_E);
+            eMenuItem3.setToolTipText("Wyświetl najlepsze wyniki");
+            eMenuItem3.addActionListener((event) -> showBestScores());
+
             fileMenu.add(eMenuItem);
             fileMenu.add(eMenuItem2);
             fileMenu.add(eMenuItem3);
+            fileMenu.add(eMenuItem4);
             menubar.add(fileMenu);
 
             setJMenuBar(menubar);
@@ -73,6 +78,9 @@ public class Game extends JFrame {
             l.setIcon(i);
             add(l);
         }
+
+    private void showBestScores() {
+    }
 
 
     public void startGame() {

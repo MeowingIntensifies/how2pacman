@@ -121,33 +121,8 @@ public class LevelMap {
     private void constructMap (int level) {
         ghostDataList = new ArrayList<>();
         String pathname;
-        switch (level) {
-            case 1: {
-                pathname = "1.txt";
-                break;
-            }
-            case 2: {
-                pathname = "2.txt";
-                break;
-            }
-            case 3: {
-                pathname = "3.txt";
-                break;
-            }
-            case 4: {
-                pathname = "4.txt";
-                break;
-            }
-            case 50: {
-                pathname = "5.txt";
-                break;
-            }
-            default: {
-                pathname = "1.txt";
-                System.err.println("Nie znaleziono poziomu, wczytuje poziom pierwszzy");
-                break;
-            }
-        }
+        String protoPathname = level + ".txt";
+        pathname = protoPathname;
             try {
                 File file = new File(pathname);
                 Scanner in = new Scanner(file);
@@ -182,8 +157,8 @@ public class LevelMap {
 
                 }
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                System.err.println("Nie znaleziono pliku/plik ma niepoprawną nazwę ");
+                System.err.println("Nie znaleziono pliku/plik ma niepoprawną nazwę, wczytuje poziom pierwszy");
+                constructMap(1);
             }
         }
 
@@ -223,6 +198,18 @@ public class LevelMap {
 
     public int getlevelTimer() {
         return levelTimer;
+    }
+    public static boolean isNextLevelThere(int lvl){
+        String pathname;
+        String protoPathname = lvl + ".txt";
+        pathname = protoPathname;
+        try {
+            File file = new File(pathname);
+            Scanner in = new Scanner(file);
+        }catch (Exception k ){
+            return false;
+        }
+        return true;
     }
 }
 

@@ -30,7 +30,6 @@ public class Pacman {
     protected int startingY;
     protected int position_y;
     protected int direction;
-    protected int status;
     protected int lastDX;
     protected int lastDY;
     protected int dx;
