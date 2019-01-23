@@ -14,6 +14,10 @@ import java.util.Scanner;
             int place = checkScore(score);
             if(place != -1 ){
                 setName();
+                for(int i = 8; i >= place; i--) {
+                        scores[i+1][0] = scores[i][0];
+                        scores[i+1][1] = scores[i][1];
+                }
                 scores[place][0] = name;
                 scores[place][1] = Integer.toString(score);
                 copyScoresToFile();
@@ -94,7 +98,9 @@ import java.util.Scanner;
 
         public  void setName(){
             name = JOptionPane.showInputDialog(null, "Gratulacje, znalazłeś się w pierwszej dziesiątce! Wpisz swoje imie ", "Nowy rekord", JOptionPane.QUESTION_MESSAGE);
-
+            while(name.length() > 20 || name.contains(" ") ){
+                name = JOptionPane.showInputDialog(null, "Imie nie może zawierać spacji ani mieć więcej niż 20 znaków!", "Nowy rekord", JOptionPane.QUESTION_MESSAGE);
+            }
         }
     }
 

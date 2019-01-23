@@ -61,9 +61,9 @@ public class Game extends JFrame {
             eMenuItem3.addActionListener((event) -> chooseLevel());
 
             var eMenuItem4 = new JMenuItem("Najlepsze wyniki", exitIcon);
-            eMenuItem3.setMnemonic(KeyEvent.VK_E);
-            eMenuItem3.setToolTipText("Wyświetl najlepsze wyniki");
-            eMenuItem3.addActionListener((event) -> showBestScores());
+            eMenuItem4.setMnemonic(KeyEvent.VK_E);
+            eMenuItem4.setToolTipText("Wyświetl najlepsze wyniki");
+            eMenuItem4.addActionListener((event) ->startGame(Board.SHOW_SCORES));
 
             fileMenu.add(eMenuItem);
             fileMenu.add(eMenuItem2);
@@ -78,9 +78,6 @@ public class Game extends JFrame {
             l.setIcon(i);
             add(l);
         }
-
-    private void showBestScores() {
-    }
 
 
     public void startGame() {

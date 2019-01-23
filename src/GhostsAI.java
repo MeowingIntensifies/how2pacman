@@ -39,6 +39,7 @@ public class GhostsAI {
                 continue;
             }
             if (ghost.getIsAlive() == false){
+                ghost.changeImage(0);
                 ghost.setScaredOnce(true);
                 ghost.setFrightened(false);
                 if(ghost.getXPosition() != GHOST_GRAVEYARD_X  && ghost.getYPosition() != GHOST_GRAVEYARD_Y ) {              // sprawdzamy czy już nie znajduje się na cmentarzu (poza mapą)// jeśli nie znaczy że jest tu pierwszy raz i nakładamy na niego nieśmiertelność
@@ -99,8 +100,6 @@ public class GhostsAI {
     }
 
     private void whereToGhost(Ghost ghost, int ghostType) {
-
-        checkWhereAndIfShouldTurn(ghost);
         if (checkWhereAndIfShouldTurn(ghost) == -1) {
             ghost.returnLastMove();
         }

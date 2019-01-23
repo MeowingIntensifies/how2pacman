@@ -11,6 +11,8 @@ public class Board extends JPanel implements ActionListener {
     public static final int MAPSHIFT = 50;
     public static final int DELAY = 10;                                         // Zmienna MAPSHIFT określa przesunięcie poszczególnych elementów tablicy 2d na piksele ( wielkosc siatki)
     public static final int GHOST_KILLED_POINTS = 100;
+    public final static int TRANSPARENT_TIMER = 1000;
+    public static final int SHOW_SCORES = -100 ;
 
     private Timer timer;
     private Pacman pacman;
@@ -26,21 +28,33 @@ public class Board extends JPanel implements ActionListener {
     private Image scoreScreen;
     private int pointTimer;
     private int endTimer;
-    private boolean end;
-    private boolean lost;
+    private boolean endFlag;
+    private boolean lostFlag;
     private boolean scoreFlag;
     private Score newScore;
-
+    private boolean onlyScoreFlag;
 
 
     public Board(int lvl) {
-        scoreFlag = false;
-        endTimer = 300;
-        lost = false;
-        end = false;
-        pacmanLifes = 3;
-        points = 0;
-        initBoard(lvl);
+        if(lvl != SHOW_SCORES) {
+            onlyScoreFlag = false;
+            scoreFlag = false;
+            endTimer = 300;
+            lostFlag = false;
+            endFlag = false;
+            pacmanLifes = 3;
+            points = 0;
+            initBoard(lvl);
+        }else{
+            addKeyListener(new TAdapter());
+            this.setFocusable(true);
+            onlyScoreFlag = true;
+            endFlag = true;
+            scoreFlag = true;
+            newScore = new Score();
+            repaint();
+        }
+
     }
 
     private void initBoard(int gameLevel) {
@@ -110,7 +124,7 @@ public class Board extends JPanel implements ActionListener {
         g2d.setPaint(Color.yellow);
         g2d.setFont(new Font ("Arial",Font.PLAIN ,20));
 
-        if(end == false) {
+        if(endFlag == false) {
             g2d.drawImage(pacman.getImage(), pacman.getXPosition(),
                     pacman.getYPosition(), this);
 
@@ -145,11 +159,16 @@ public class Board extends JPanel implements ActionListener {
                 }
             }
             for (Ghost ghost : ghostList) {
-                g2d.drawImage(ghost.getImage(), ghost.getXPosition(),
-                        ghost.getYPosition(), this);
+                if(ghost.getIsAlive()== true) {
+                    g2d.drawImage(ghost.getImage(), ghost.getXPosition(),
+                            ghost.getYPosition(), this);
+                }else if (ghost.getIsAlive() == false && ghost.getTimer() < TRANSPARENT_TIMER ){
+                    g2d.drawImage(ghost.getImage(), ghost.getStartingX(),
+                            ghost.getStartingY(), this);
+                }
             }
         }else if (scoreFlag == false){
-            if (isLost()== false) {
+            if (isLostFlag()== false) {
                 loadWinScreen();
                 g2d.drawImage(winScreen, 0, 0, this);
             }else{
@@ -191,14 +210,14 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private boolean didWeLose() {
-        if(end == true) {
+        if(endFlag == true) {
             return true;
         }
 
         if((pacmanLifes < 0) ){
             addTimerPoints();
-            end = true;
-            setLost(true);
+            endFlag = true;
+            setLostFlag(true);
             repaint();
             return true;
         }
@@ -212,9 +231,11 @@ public class Board extends JPanel implements ActionListener {
             increaseLife();
             addTimerPoints();
             if(LevelMap.isNextLevelThere(level.getCurrentLevel()+1)) {
+                timer.stop();
                 initBoard(level.getCurrentLevel() + 1);
+                this.removeAll();
             }else{
-                end = true;
+                endFlag = true;
             }
             repaint();
             return true;
@@ -316,12 +337,12 @@ public class Board extends JPanel implements ActionListener {
             this.points += points;
         }
 
-    public void setLost(boolean lost) {
-        this.lost = lost;
+    public void setLostFlag(boolean lostFlag) {
+        this.lostFlag = lostFlag;
     }
 
-    public boolean isLost() {
-        return lost;
+    public boolean isLostFlag() {
+        return lostFlag;
     }
 
 

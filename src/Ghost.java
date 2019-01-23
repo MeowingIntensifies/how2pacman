@@ -63,6 +63,26 @@ public class Ghost extends Pacman{
         ImageIcon oo = new ImageIcon("Blinkey\\BlinkeyLeftGif.gif");
         if(isFrigtened()) {
             oo = new ImageIcon("ScaredGif.gif");
+        }else if(getTimer() < Board.TRANSPARENT_TIMER){
+            switch (ghostType) {
+                case RED: {
+                    oo = new ImageIcon("Blinkey\\BlinkeyLeftTransparent.png");
+                    break;
+                }
+                case BLUE: {
+                    oo = new ImageIcon("Inky\\InkyLeftTransparent.png");
+                    break;
+                }
+                case ORANG: {
+                    oo = new ImageIcon("Clyde\\ClydeLeftTransparent.png");
+                    break;
+                }
+                case PINK: {
+                    oo = new ImageIcon("Pinky\\PinkyLeftTransparent.png");
+                    break;
+                }
+            }
+
         }
         else{
             switch (ghostType) {
