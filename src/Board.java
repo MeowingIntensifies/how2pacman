@@ -178,7 +178,7 @@ public class Board extends JPanel implements ActionListener {
                 g2d.setPaint(Color.yellow);
                 g2d.setFont(new Font ("Arial", Font.BOLD, 80));
                 String tempScore = String.valueOf(getPoints());
-                g2d.drawString(tempScore, 525, 550);
+                g2d.drawString(tempScore, 550, 550);
             }else{
                 loadScoreScreen();
                 g2d.drawImage(scoreScreen, 0, 0, this);

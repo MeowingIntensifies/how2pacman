@@ -18,8 +18,8 @@ public class Game extends JFrame {
         private void initUI( int  lvl) {
                 add(new Board(lvl));
 
-                setTitle("Pacman ver 0.80");
-                setSize(1200, 1000);
+                setTitle("Pacman ver 0.82");
+                setSize(1265, 1000);
 
                 setLocationRelativeTo(null);
                 setResizable(false);
@@ -28,8 +28,7 @@ public class Game extends JFrame {
         }
             private void initMenu() {
                 createMenuBar();
-                System.out.println("fugg");
-                setTitle("Pacman ver 0.80");
+                setTitle("Pacman ver 0.82");
                 setSize(300, 550);
 
                 setLocationRelativeTo(null);

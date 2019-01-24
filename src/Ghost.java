@@ -62,7 +62,9 @@ public class Ghost extends Pacman{
     public void changeImage( int direction) {
         ImageIcon oo = new ImageIcon("Blinkey\\BlinkeyLeftGif.gif");
         if(isFrigtened()) {
+
             oo = new ImageIcon("ScaredGif.gif");
+
         }else if(getTimer() < Board.TRANSPARENT_TIMER){
             switch (ghostType) {
                 case RED: {
